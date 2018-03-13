@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Currency converter</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="converter.js"></script>
+</head>
+
+<body style="margin-top: 50px;">
+<div class="container">
+    <div class="form">
+    	<div class=form-group">
+    	<input type="text" id="interval" class="form-control" /> Enter refresh Interval in seconds(e.g every 5 seconds new exchange rate will be displayed after initial display)
+    	</div>
+    	<br />
+        <div class="form-group">
+    	    <button type="button" id="converter" class="btn btn-info">Show currency convertion</button>
+        </div>
+        <div class="output">           
+		    <table class="table table-bordered table-striped">
+		        <thead>
+		            <tr>
+		                <th>EUR to USD</th>
+		                <th>USD to CHF</th>
+		                <th>USD to JPY</th>
+		            </tr>
+		        </thead>
+		        <tbody>
+		            <tr>
+		                <td id="EURUSD">N/A</td>
+		                <td id="USDCHF">N/A</td>
+		                <td id="USDJPY">N/A</td>
+		            </tr>
+		        </tbody>
+		    </table>
+        </div>
+    </div>
+
+</body>
+</html>
