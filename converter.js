@@ -1,51 +1,47 @@
 ﻿var CurrencyConverter = (function () {
-  var apiKey = "L6AALMMI4PBH7IY8";
+'use strict';
 
-  var getData = function (from,to) {
+  var apiKey = "L6AALMMI4PBH7IY8",
+      intervalRef = null;
+
+  var convert = function (from,to) {
     var url = 'https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency='
     + from + '&to_currency=' + to + '&apikey=' + apiKey;
 
     return $.getJSON(url);
   };
 
-  var convert = function (from, to) {
-    return getData(from, to);
-  };
-
   var EURtoUSD = function(interval) {
-    return convert("EUR", "USD")
-      .done(function(data) {
-        $("#EURUSD").html(data["Realtime Currency Exchange Rate"]["5. Exchange Rate"]);
-        setTimeout(function() {
-          return EURtoUSD();
-        }, interval * 1000);
-      });
+    return convert("EUR", "USD");
   }
   
   var USDtoCHF = function(interval) {
-    return convert("USD", "CHF")
-      .done(function(data) {
-        $("#USDCHF").html(data["Realtime Currency Exchange Rate"]["5. Exchange Rate"]);
-        setTimeout(function() {
-          return USDtoCHF();
+    return convert("USD", "CHF");
+  }
+
+  var USDtoJPY = function(interval) {
+    return convert("USD", "JPY");
+  }
+
+  var convertAll = function(interval) {
+    return $.when(EURtoUSD(), USDtoCHF(), USDtoJPY())
+      .done(function(data1, data2, data3) {
+        $("#EURUSD").html(data1[0]["Realtime Currency Exchange Rate"]["5. Exchange Rate"]);
+        $("#USDCHF").html(data2[0]["Realtime Currency Exchange Rate"]["5. Exchange Rate"]);
+        $("#USDJPY").html(data3[0]["Realtime Currency Exchange Rate"]["5. Exchange Rate"]);
+        intervalRef = setTimeout(function() {
+          convertAll(interval);
         }, interval * 1000);
       });
   }
 
-  var USDtoJPY = function(interval) {
-    return convert("USD", "JPY")
-      .done(function(data) {
-        $("#USDJPY").html(data["Realtime Currency Exchange Rate"]["5. Exchange Rate"]);
-        setTimeout(function() {
-          return USDtoJPY();
-        }, interval * 1000);
-      });
+  var stopRefresh = function() {
+    clearTimeout(intervalRef);
   }
   
   return {
-    EURtoUSD: EURtoUSD,
-    USDtoCHF: USDtoCHF,
-    USDtoJPY: USDtoJPY
+    convertAll: convertAll,
+    stopRefresh: stopRefresh
   };
 
 })();
@@ -56,9 +52,11 @@ $(function() {
     if(!interval) {
       alert("Please enter a valid refresh interval in seconds!");
     } else {
-      CurrencyConverter.EURtoUSD(interval);
-      CurrencyConverter.USDtoCHF(interval);
-      CurrencyConverter.USDtoJPY(interval);
+      CurrencyConverter.convertAll(interval);
     }
+  });
+
+  $("#stop-converter").click(function() {
+    CurrencyConverter.stopRefresh();
   });
 });
